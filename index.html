@@ -26,7 +26,6 @@
     color: var(--text);
     font-family: 'Syne', sans-serif;
     min-height: 100vh;
-    padding: 0;
     overflow-x: hidden;
   }
   .bg-grid {
@@ -49,11 +48,54 @@
     padding: 2rem 1.5rem 4rem;
   }
 
+  /* LOGIN */
+  #login-screen {
+    position: fixed; inset: 0; background: #0a0e1a;
+    z-index: 1000; display: flex; align-items: center; justify-content: center;
+  }
+  .login-box {
+    background: #111827; padding: 2rem 2rem 1.75rem;
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+    width: 340px;
+  }
+  .login-box h2 {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #4f9eff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+  .login-box .sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 1.5rem; }
+  .login-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+  .tab-btn {
+    flex: 1; padding: 8px; border-radius: 8px; font-size: 13px;
+    font-family: 'DM Mono', monospace; cursor: pointer;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+  .auth-input {
+    width: 100%; padding: 11px 14px; margin-bottom: 10px;
+    border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);
+    background: #0a0e1a; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .auth-input:focus { border-color: var(--accent); }
+  .auth-input::placeholder { color: var(--muted); }
+  .btn-primary {
+    width: 100%; padding: 12px; background: var(--accent);
+    border: none; color: white; border-radius: 8px;
+    cursor: pointer; font-weight: 700; font-size: 14px;
+    font-family: 'Syne', sans-serif; transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  #auth-error { margin-top: 12px; font-size: 12px; font-family: 'DM Mono', monospace; min-height: 18px; text-align: center; }
+
   /* HEADER */
   header {
     display: flex; align-items: flex-start; justify-content: space-between;
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem; padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
   }
   .logo-area h1 {
@@ -62,218 +104,138 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .logo-area p { font-size: 13px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
-  .header-right { text-align: right; }
+  .header-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
   .live-badge {
     display: inline-flex; align-items: center; gap: 6px;
     background: rgba(81,207,102,0.1); border: 1px solid rgba(81,207,102,0.25);
     color: var(--green); font-size: 11px; font-family: 'DM Mono', monospace;
     padding: 5px 12px; border-radius: 20px;
   }
-  .live-dot {
-    width: 6px; height: 6px; background: var(--green);
-    border-radius: 50%; animation: pulse 2s infinite;
-  }
+  .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-  #last-update { font-size: 11px; color: var(--muted); margin-top: 8px; font-family: 'DM Mono', monospace; }
+  #last-update { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  #user-label { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .btn-logout {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'DM Mono', monospace;
+    font-size: 11px; padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--hot); color: var(--hot); }
 
   /* LOADING */
-  #loading {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; min-height: 300px; gap: 16px;
-  }
-  .spin {
-    width: 36px; height: 36px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 16px; }
+  .spin { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   #loading p { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
-
-  /* ERROR */
-  #error-state {
-    display: none; text-align: center;
-    padding: 3rem; color: var(--muted);
-    font-size: 14px;
-  }
-
-  /* MAIN CONTENT */
+  #error-state { display: none; text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
   #content { display: none; }
 
-  /* HERO TEMP */
-  .hero {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 1rem; margin-bottom: 1rem;
-  }
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
   .hero-main {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.75rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem;
     position: relative; overflow: hidden;
   }
   .hero-main::before {
-    content: ''; position: absolute;
-    top: -60px; right: -60px;
-    width: 180px; height: 180px;
-    border-radius: 50%;
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 180px; height: 180px; border-radius: 50%;
     background: radial-gradient(circle, rgba(79,158,255,0.12), transparent 70%);
     pointer-events: none;
   }
-  .hero-main .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.1em;
-    margin-bottom: 8px;
-  }
-  .big-temp {
-    font-size: 72px; font-weight: 800; line-height: 1;
-    letter-spacing: -3px;
-  }
-  .feels-row {
-    margin-top: 12px; font-family: 'DM Mono', monospace;
-    font-size: 12px; color: var(--muted);
-  }
-  .weather-desc {
-    font-size: 14px; color: var(--muted);
-    margin-top: 4px;
-  }
-  .metrics-col {
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-  .metric-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    flex: 1;
-  }
-  .metric-box .m-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .metric-box .m-val {
-    font-size: 32px; font-weight: 700;
-    letter-spacing: -1px;
-  }
+  .hero-main .tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .big-temp { font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -3px; }
+  .feels-row { margin-top: 12px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+  .weather-desc { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .metrics-col { display: flex; flex-direction: column; gap: 1rem; }
+  .metric-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; flex: 1; }
+  .metric-box .m-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+  .metric-box .m-val { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
 
   /* RECOMMENDATION */
   .rec-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
     display: flex; align-items: flex-start; gap: 1rem;
   }
-  .rec-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0;
-  }
+  .rec-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
   .rec-text h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
   .rec-text p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
   /* CHART */
-  .chart-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .section-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1.25rem;
-  }
-  .section-header h2 {
-    font-size: 14px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--muted);
-  }
-  .chart-bars {
-    display: flex; align-items: flex-end; gap: 5px;
-    height: 100px;
-  }
-  .bar-col {
-    display: flex; flex-direction: column;
-    align-items: center; flex: 1; gap: 4px;
-  }
-  .bar {
-    width: 100%; border-radius: 4px 4px 0 0;
-    min-height: 4px; transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+  .chart-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .section-header h2 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .chart-bars { display: flex; align-items: flex-end; gap: 5px; height: 100px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 4px; }
+  .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .bar.current { box-shadow: 0 0 12px rgba(79,158,255,0.5); }
   .bar-hr { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
   .bar-t { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
 
   /* FORECAST */
-  .forecast-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .forecast-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .forecast-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+  .forecast-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .forecast-row:last-child { border-bottom: none; }
-  .forecast-row .f-time {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px; color: var(--muted);
-    width: 50px;
-  }
-  .forecast-row .f-bar-wrap {
-    flex: 1; margin: 0 16px;
-    height: 4px; background: var(--surface2);
-    border-radius: 2px; overflow: hidden;
-  }
+  .forecast-row .f-time { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); width: 50px; }
+  .forecast-row .f-bar-wrap { flex: 1; margin: 0 16px; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
   .forecast-row .f-bar { height: 100%; border-radius: 2px; }
-  .forecast-row .f-temp {
-    font-size: 15px; font-weight: 600;
-    width: 48px; text-align: right;
+  .forecast-row .f-temp { font-size: 15px; font-weight: 600; width: 48px; text-align: right; }
+  .forecast-row .f-rec { font-size: 11px; color: var(--muted); width: 180px; text-align: right; font-family: 'DM Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ── REGISTRO MANUAL ── */
+  .registro-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
   }
-  .forecast-row .f-rec {
-    font-size: 11px; color: var(--muted);
-    width: 180px; text-align: right;
-    font-family: 'DM Mono', monospace;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  .registro-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 10px; align-items: end; margin-top: 1rem;
+  }
+  .field-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .field-wrap label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .field-input {
+    padding: 10px 12px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--surface2); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .field-input:focus { border-color: var(--accent); }
+  .field-input::placeholder { color: var(--muted); }
+  .btn-save {
+    padding: 10px 20px; background: var(--accent);
+    border: none; color: white; border-radius: 8px;
+    cursor: pointer; font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; white-space: nowrap;
+    transition: opacity 0.2s; height: 40px;
+  }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+  #save-msg {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    margin-top: 10px; min-height: 18px; transition: opacity 0.3s;
   }
 
-  /* UPDATE BUTTON */
-  .btn-update {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  /* HISTORIAL */
+  .historial-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+  .hist-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+  .hist-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 0 10px 0; text-align: left; border-bottom: 1px solid var(--border); }
+  .hist-table td { font-size: 13px; padding: 9px 0; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; color: var(--muted); }
+  .hist-table td:first-child { color: var(--text); font-weight: 500; }
+  .hist-table tr:last-child td { border-bottom: none; }
+  .hist-empty { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 0.75rem; }
+
+  /* BUTTONS */
+  .btn-update { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
   .btn-update:hover { border-color: var(--accent); color: var(--accent); }
 
   /* FOOTER */
-  footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
   .team-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-  .team-badge {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; font-size: 10px; font-family: 'DM Mono', monospace;
-    color: var(--muted); padding: 3px 10px;
-  }
+  .team-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); padding: 3px 10px; }
 
   @media (max-width: 600px) {
     .hero { grid-template-columns: 1fr; }
@@ -281,22 +243,36 @@
     .big-temp { font-size: 56px; }
     .forecast-row .f-rec { display: none; }
     footer { flex-direction: column; gap: 12px; }
+    .registro-grid { grid-template-columns: 1fr 1fr; }
+    .btn-save { grid-column: span 2; }
   }
 </style>
 </head>
 <body>
-<div id="login-screen" style="position: fixed; inset: 0; background: #0a0e1a; z-index: 1000; display: flex; align-items: center; justify-content: center;">
-    <div style="background: #111827; padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); width: 320px; text-align: center;">
-        <h2 style="margin-bottom: 20px; font-family: 'Syne';">ThermoTrack</h2>
-        <input type="email" id="email" placeholder="Tu correo" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #1a2234; background: #0a0e1a; color: white;">
-        <input type="password" id="password" placeholder="Tu contraseña" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #1a2234; background: #0a0e1a; color: white;">
-        <button onclick="login()" style="width: 100%; padding: 12px; background: #4f9eff; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;">Iniciar Sesión</button>
-        <p id="auth-error" style="margin-top: 15px; font-size: 12px;"></p>
-    </div>
-</div>
+
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
 
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>ThermoTrack</h2>
+    <p class="sub">// USC · Proyecto 2</p>
+    <div class="login-tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+    </div>
+    <input class="auth-input" type="email" id="email" placeholder="correo@ejemplo.com" />
+    <input class="auth-input" type="password" id="password" placeholder="Contraseña" />
+    <div id="register-fields" style="display:none;">
+      <input class="auth-input" type="text" id="fullname" placeholder="Nombre completo" />
+    </div>
+    <button class="btn-primary" id="auth-btn" onclick="handleAuth()">Entrar</button>
+    <p id="auth-error"></p>
+  </div>
+</div>
+
+<!-- APP -->
 <div class="wrap">
   <header>
     <div class="logo-area">
@@ -306,6 +282,8 @@
     <div class="header-right">
       <div class="live-badge"><div class="live-dot"></div>EN VIVO</div>
       <div id="last-update">Cargando datos...</div>
+      <div id="user-label"></div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
   </header>
 
@@ -315,9 +293,8 @@
   </div>
 
   <div id="error-state">
-    <p>No se pudo conectar con la API del clima.<br>Verifica tu conexión a internet e intenta de nuevo.</p>
-    <br>
-    <button class="btn-update" onclick="loadData()">Reintentar</button>
+    <p>No se pudo conectar con la API del clima.<br>Verifica tu conexión e intenta de nuevo.</p>
+    <br><button class="btn-update" onclick="loadData()">Reintentar</button>
   </div>
 
   <div id="content">
@@ -332,11 +309,11 @@
       <div class="metrics-col">
         <div class="metric-box">
           <div class="m-label">// máxima del día</div>
-          <div class="m-val" id="temp-max" style="color: var(--hot);">--°</div>
+          <div class="m-val" id="temp-max" style="color:var(--hot);">--°</div>
         </div>
         <div class="metric-box">
           <div class="m-label">// mínima del día</div>
-          <div class="m-val" id="temp-min" style="color: var(--cool);">--°</div>
+          <div class="m-val" id="temp-min" style="color:var(--cool);">--°</div>
         </div>
       </div>
     </div>
@@ -358,13 +335,56 @@
     </div>
 
     <div class="forecast-section">
-      <div class="section-header">
-        <h2>Próximas horas</h2>
-      </div>
+      <div class="section-header"><h2>Próximas horas</h2></div>
       <div id="forecast-list"></div>
     </div>
 
-  </div>
+    <!-- ── REGISTRO MANUAL ── -->
+    <div class="registro-section">
+      <div class="section-header">
+        <h2>Registro manual de temperatura</h2>
+      </div>
+      <p style="font-size:13px; color:var(--muted); font-family:'DM Mono',monospace;">
+        ¿Sin conexión o quieres registrar una medición propia? Ingrésala aquí.
+      </p>
+      <div class="registro-grid">
+        <div class="field-wrap">
+          <label>Temperatura (°C)</label>
+          <input class="field-input" type="number" id="input-temp" placeholder="ej: 28" min="-10" max="60" step="0.1" />
+        </div>
+        <div class="field-wrap">
+          <label>Estado del clima</label>
+          <select class="field-input" id="input-estado">
+            <option value="Cielo despejado">Cielo despejado</option>
+            <option value="Parcialmente nublado">Parcialmente nublado</option>
+            <option value="Nublado">Nublado</option>
+            <option value="Llovizna">Llovizna</option>
+            <option value="Lluvia">Lluvia</option>
+            <option value="Tormenta">Tormenta</option>
+            <option value="Niebla">Niebla</option>
+          </select>
+        </div>
+        <div class="field-wrap">
+          <label>Ciudad</label>
+          <input class="field-input" type="text" id="input-ciudad" value="Cali" placeholder="ej: Cali" />
+        </div>
+        <button class="btn-save" id="btn-save" onclick="guardarManual()">+ Guardar</button>
+      </div>
+      <p id="save-msg"></p>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="historial-section">
+      <div class="section-header">
+        <h2>Mis registros</h2>
+        <button class="btn-update" onclick="cargarHistorial()">↻ Refrescar</button>
+      </div>
+      <div id="historial-content">
+        <p class="hist-empty">Cargando historial...</p>
+      </div>
+    </div>
+
+  </div><!-- /content -->
 
   <footer>
     <p>Datos: Open-Meteo API · Proyecto 2 · USC</p>
@@ -380,53 +400,56 @@
 </div>
 
 <script>
-// CONFIGURACIÓN DE SUPABASE
-const supabaseUrl = 'https://epmvqgwdgktshosgdjbt.supabase.co';
-const supabaseKey = 'sb_publishable_LNKgI0QXeM_DJmYFkYbZfw_fNBGobE-';
-const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_URL = 'https://epmvqgwdgktshosgdjbt.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LNKgI0QXeM_DJmYFkYbZfw_fNBGobE-';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('auth-error');
+let currentUser = null;
+let authMode = 'login';
 
-    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-        errorEl.textContent = "Error: " + error.message;
-        errorEl.style.color = "#ff6b6b";
-    } else {
-        console.log("Sesión iniciada:", data.user.email);
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-        loadData(); // Inicia el monitor de clima
-    }
+function switchTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+  document.getElementById('register-fields').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('auth-btn').textContent = mode === 'login' ? 'Entrar' : 'Crear cuenta';
+  document.getElementById('auth-error').textContent = '';
 }
 
-// 3. Función para guardar datos (Ahora con USER_ID)
-async function saveToSupabase(temp) {
-  // Obtenemos el usuario que acaba de iniciar sesión
-  const { data: { user } } = await _supabase.auth.getUser();
-  
-  if (user) {
-    const { error } = await _supabase
-      .from('registro_clima')
-      .insert([
-        { 
-          temperatura: temp, 
-          ciudad: 'Cali', 
-          user_id: user.id  // <--- ESTA LÍNEA ES VITAL
-        }
-      ]);
+async function handleAuth() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errorEl = document.getElementById('auth-error');
+  errorEl.textContent = '';
+  if (!email || !password) { errorEl.style.color = '#ff6b6b'; errorEl.textContent = 'Completa todos los campos.'; return; }
 
-    if (error) {
-      console.error("Error al guardar:", error.message);
-    } else {
-      console.log("Datos guardados para:", user.email);
-    }
+  if (authMode === 'login') {
+    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+    if (error) { errorEl.style.color = '#ff6b6b'; errorEl.textContent = error.message; return; }
+    enterApp(data.user);
+  } else {
+    const { data, error } = await _supabase.auth.signUp({ email, password });
+    if (error) { errorEl.style.color = '#ff6b6b'; errorEl.textContent = error.message; return; }
+    errorEl.style.color = '#51cf66';
+    errorEl.textContent = 'Cuenta creada. Ya puedes iniciar sesión.';
+    switchTab('login');
   }
 }
 
+function enterApp(user) {
+  currentUser = user;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('user-label').textContent = '// ' + user.email;
+  loadData();
+  cargarHistorial();
+}
+
+async function logout() {
+  await _supabase.auth.signOut();
+  location.reload();
+}
+
+/* ── CLIMA API ── */
 function getTempColor(t) {
   if (t <= 20) return '#3bc9db';
   if (t <= 24) return '#4f9eff';
@@ -434,35 +457,13 @@ function getTempColor(t) {
   if (t <= 32) return '#f5a623';
   return '#ff6b6b';
 }
-
 function getRec(t) {
-  if (t <= 20) return {
-    icon: '❄️', bg: 'rgba(59,201,219,0.12)', color: '#3bc9db',
-    title: 'Temperatura muy fresca — ideal para concentrarse',
-    desc: 'Excelentes condiciones cognitivas. Aprovecha para tareas de alta demanda intelectual, lectura o programación.'
-  };
-  if (t <= 24) return {
-    icon: '✅', bg: 'rgba(79,158,255,0.12)', color: '#4f9eff',
-    title: 'Momento ideal para trabajar',
-    desc: 'La temperatura está fresca y agradable. Perfecto para sesiones de trabajo enfocado o reuniones de equipo.'
-  };
-  if (t <= 28) return {
-    icon: '🌤', bg: 'rgba(81,207,102,0.12)', color: '#51cf66',
-    title: 'Condiciones confortables',
-    desc: 'Temperatura agradable. Buen momento para cualquier actividad. Mantente hidratado.'
-  };
-  if (t <= 32) return {
-    icon: '🌡', bg: 'rgba(245,166,35,0.12)', color: '#f5a623',
-    title: 'Calor moderado — toma pausas y agua',
-    desc: 'Empieza a hacer calor. Ventila el espacio, toma agua con frecuencia y considera pausas de 10 min cada hora.'
-  };
-  return {
-    icon: '🔥', bg: 'rgba(255,107,107,0.12)', color: '#ff6b6b',
-    title: 'Calor alto — busca un espacio fresco',
-    desc: 'Temperatura crítica para la productividad. Minimiza el esfuerzo físico, busca ventilación o aire acondicionado.'
-  };
+  if (t <= 20) return { icon:'❄️', bg:'rgba(59,201,219,0.12)', color:'#3bc9db', title:'Temperatura muy fresca — ideal para concentrarse', desc:'Excelentes condiciones cognitivas. Aprovecha para tareas de alta demanda intelectual, lectura o programación.' };
+  if (t <= 24) return { icon:'✅', bg:'rgba(79,158,255,0.12)', color:'#4f9eff', title:'Momento ideal para trabajar', desc:'La temperatura está fresca y agradable. Perfecto para sesiones de trabajo enfocado o reuniones de equipo.' };
+  if (t <= 28) return { icon:'🌤', bg:'rgba(81,207,102,0.12)', color:'#51cf66', title:'Condiciones confortables', desc:'Temperatura agradable. Buen momento para cualquier actividad. Mantente hidratado.' };
+  if (t <= 32) return { icon:'🌡', bg:'rgba(245,166,35,0.12)', color:'#f5a623', title:'Calor moderado — toma pausas y agua', desc:'Ventila el espacio, toma agua con frecuencia y considera pausas de 10 min cada hora.' };
+  return { icon:'🔥', bg:'rgba(255,107,107,0.12)', color:'#ff6b6b', title:'Calor alto — busca un espacio fresco', desc:'Temperatura crítica para la productividad. Busca ventilación o aire acondicionado.' };
 }
-
 function getWeatherDesc(code) {
   if (code === 0) return 'Cielo despejado';
   if (code <= 2) return 'Parcialmente nublado';
@@ -475,43 +476,28 @@ function getWeatherDesc(code) {
   return 'Tormenta';
 }
 
-// Función para guardar datos en Supabase
-async function guardarEnSupabase(temp, desc) {
-  try {
-    const { data, error } = await _supabase
-      .from('registro_clima') // Asegúrate de que tu tabla se llame así
-      .insert([{ temperatura: temp, estado_clima: desc, ciudad: 'Cali' }]);
-    
-    if (error) throw error;
-    console.log("Datos guardados en Supabase exitosamente.");
-  } catch (err) {
-    console.error("Error al guardar en Supabase:", err.message);
-  }
-}
-
 async function loadData() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('content').style.display = 'none';
   document.getElementById('error-state').style.display = 'none';
-
   try {
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=3.4516&longitude=-76.5320&current_weather=true&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FBogota&forecast_days=1';
     const res = await fetch(url);
     const d = await res.json();
-
     const cw = d.current_weather;
     const current = Math.round(cw.temperature);
     const max = Math.round(d.daily.temperature_2m_max[0]);
     const min = Math.round(d.daily.temperature_2m_min[0]);
     const weatherDesc = getWeatherDesc(cw.weathercode);
-    const hours = d.hourly.time.map(t => t.slice(11, 16));
+    const hours = d.hourly.time.map(t => t.slice(11,16));
     const temps = d.hourly.temperature_2m.map(t => Math.round(t));
-
     const now = new Date();
     const currentHour = now.getHours();
 
-    // Guardar los datos actuales en Supabase
-    await guardarEnSupabase(current, weatherDesc);
+    // Auto-save API reading
+    if (currentUser) {
+      await _supabase.from('registro_clima').insert([{ temperatura: current, estado_clima: weatherDesc, ciudad: 'Cali', user_id: currentUser.id }]);
+    }
 
     document.getElementById('temp-now').textContent = current + '°C';
     document.getElementById('temp-now').style.color = getTempColor(current);
@@ -519,7 +505,7 @@ async function loadData() {
     document.getElementById('temp-min').textContent = min + '°C';
     document.getElementById('weather-desc').textContent = weatherDesc;
     document.getElementById('feels-row').textContent = `Rango diario: ${min}°C – ${max}°C`;
-    document.getElementById('last-update').textContent = 'Actualizado: ' + now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('last-update').textContent = 'Actualizado: ' + now.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'});
 
     const rec = getRec(current);
     const recSection = document.getElementById('rec-section');
@@ -531,56 +517,119 @@ async function loadData() {
     document.getElementById('rec-title').style.color = rec.color;
     document.getElementById('rec-desc').textContent = rec.desc;
 
-    // CHART
     const barsEl = document.getElementById('chart-bars');
     barsEl.innerHTML = '';
     const maxT = Math.max(...temps), minT = Math.min(...temps);
     const range = maxT - minT || 1;
-    const step = Math.max(1, Math.floor(24 / 12));
+    const step = Math.max(1, Math.floor(24/12));
     for (let i = 0; i < 24; i += step) {
       const t = temps[i];
       const h = Math.round(((t - minT) / range) * 72 + 12);
       const isCurrent = i === currentHour || (i < currentHour && i + step > currentHour);
       const col = document.createElement('div');
       col.className = 'bar-col';
-      col.innerHTML = `
-        <div class="bar-t">${t}°</div>
-        <div class="bar${isCurrent ? ' current' : ''}" style="height:${h}px; background:${isCurrent ? getTempColor(t) : 'rgba(255,255,255,0.08)'};"></div>
-        <div class="bar-hr">${hours[i].replace(':00', 'h')}</div>
-      `;
+      col.innerHTML = `<div class="bar-t">${t}°</div><div class="bar${isCurrent?' current':''}" style="height:${h}px;background:${isCurrent?getTempColor(t):'rgba(255,255,255,0.08)'};"></div><div class="bar-hr">${hours[i].replace(':00','h')}</div>`;
       barsEl.appendChild(col);
     }
 
-    // FORECAST
     const forecastEl = document.getElementById('forecast-list');
     forecastEl.innerHTML = '';
     const nextHours = [];
-    for (let i = currentHour + 1; i <= currentHour + 6 && i < 24; i++) nextHours.push(i);
+    for (let i = currentHour+1; i <= currentHour+6 && i < 24; i++) nextHours.push(i);
     nextHours.forEach(i => {
-      const t = temps[i];
-      const r = getRec(t);
+      const t = temps[i]; const r = getRec(t);
       const pct = Math.round(((t - minT) / range) * 100);
       const row = document.createElement('div');
       row.className = 'forecast-row';
-      row.innerHTML = `
-        <span class="f-time">${hours[i]}</span>
-        <div class="f-bar-wrap"><div class="f-bar" style="width:${pct}%; background:${getTempColor(t)};"></div></div>
-        <span class="f-temp" style="color:${getTempColor(t)};">${t}°C</span>
-        <span class="f-rec">${r.title}</span>
-      `;
+      row.innerHTML = `<span class="f-time">${hours[i]}</span><div class="f-bar-wrap"><div class="f-bar" style="width:${pct}%;background:${getTempColor(t)};"></div></div><span class="f-temp" style="color:${getTempColor(t)};">${t}°C</span><span class="f-rec">${r.title}</span>`;
       forecastEl.appendChild(row);
     });
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
-  } catch (e) {
+  } catch(e) {
     console.error(e);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error-state').style.display = 'block';
   }
 }
 
-loadData();
+/* ── REGISTRO MANUAL ── */
+async function guardarManual() {
+  const tempVal = document.getElementById('input-temp').value;
+  const estado = document.getElementById('input-estado').value;
+  const ciudad = document.getElementById('input-ciudad').value.trim() || 'Cali';
+  const msgEl = document.getElementById('save-msg');
+  const btn = document.getElementById('btn-save');
+
+  if (!tempVal) { msgEl.style.color = '#ff6b6b'; msgEl.textContent = '⚠ Ingresa una temperatura válida.'; return; }
+  const temp = parseFloat(tempVal);
+  if (temp < -10 || temp > 60) { msgEl.style.color = '#ff6b6b'; msgEl.textContent = '⚠ Temperatura fuera de rango (-10 a 60°C).'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  msgEl.textContent = '';
+
+  const { error } = await _supabase.from('registro_clima').insert([{
+    temperatura: temp,
+    estado_clima: estado,
+    ciudad: ciudad,
+    user_id: currentUser.id
+  }]);
+
+  btn.disabled = false;
+  btn.textContent = '+ Guardar';
+
+  if (error) {
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = '✗ Error al guardar: ' + error.message;
+  } else {
+    msgEl.style.color = '#51cf66';
+    msgEl.textContent = '✓ Registro guardado correctamente.';
+    document.getElementById('input-temp').value = '';
+    setTimeout(() => { msgEl.textContent = ''; }, 3000);
+    cargarHistorial();
+  }
+}
+
+/* ── HISTORIAL ── */
+async function cargarHistorial() {
+  if (!currentUser) return;
+  const container = document.getElementById('historial-content');
+  container.innerHTML = '<p class="hist-empty">Cargando...</p>';
+
+  const { data, error } = await _supabase
+    .from('registro_clima')
+    .select('temperatura, estado_clima, ciudad, created_at')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (error || !data || data.length === 0) {
+    container.innerHTML = '<p class="hist-empty">Aún no tienes registros. ¡Guarda tu primera medición!</p>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'hist-table';
+  table.innerHTML = `<thead><tr><th>Temp.</th><th>Estado</th><th>Ciudad</th><th>Fecha y hora</th></tr></thead>`;
+  const tbody = document.createElement('tbody');
+  data.forEach(r => {
+    const fecha = new Date(r.created_at).toLocaleString('es-CO', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:${getTempColor(r.temperatura)};font-weight:700;">${r.temperatura}°C</td>
+      <td>${r.estado_clima || '—'}</td>
+      <td>${r.ciudad || '—'}</td>
+      <td>${fecha}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  container.innerHTML = '';
+  container.appendChild(table);
+}
+
 setInterval(loadData, 5 * 60 * 1000);
 </script>
 </body>
