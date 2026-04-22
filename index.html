@@ -405,22 +405,26 @@ async function login() {
 
 // 3. Función para guardar datos (Ahora con USER_ID)
 async function saveToSupabase(temp) {
-    const { data: { user } } = await _supabase.auth.getUser();
-    
-    if (!user) return;
-
+  // Obtenemos el usuario que acaba de iniciar sesión
+  const { data: { user } } = await _supabase.auth.getUser();
+  
+  if (user) {
     const { error } = await _supabase
-        .from('registro_clima')
-        .insert([
-            { 
-                temperatura: temp, 
-                ciudad: 'Cali', 
-                user_id: user.id // Aquí se aplica la política RLS que configuraste
-            }
-        ]);
+      .from('registro_clima')
+      .insert([
+        { 
+          temperatura: temp, 
+          ciudad: 'Cali', 
+          user_id: user.id  // <--- ESTA LÍNEA ES VITAL
+        }
+      ]);
 
-    if (error) console.error("Error al guardar:", error.message);
-    else console.log("Datos guardados para el usuario:", user.email);
+    if (error) {
+      console.error("Error al guardar:", error.message);
+    } else {
+      console.log("Datos guardados para:", user.email);
+    }
+  }
 }
 
 function getTempColor(t) {
