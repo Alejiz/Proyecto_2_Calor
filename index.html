@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ThermoTrack — Cali</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg: #0a0e1a;
@@ -370,6 +371,11 @@
 </div>
 
 <script>
+// CONFIGURACIÓN DE SUPABASE
+const supabaseUrl = 'https://epmvqgwdgktshosgdjbt.supabase.co';
+const supabaseKey = 'sb_publishable_LNKgI0QXeM_DJmYFkYbZfw_fNBGobE-';
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 function getTempColor(t) {
   if (t <= 20) return '#3bc9db';
   if (t <= 24) return '#4f9eff';
@@ -418,6 +424,20 @@ function getWeatherDesc(code) {
   return 'Tormenta';
 }
 
+// Función para guardar datos en Supabase
+async function guardarEnSupabase(temp, desc) {
+  try {
+    const { data, error } = await _supabase
+      .from('registro_clima') // Asegúrate de que tu tabla se llame así
+      .insert([{ temperatura: temp, estado_clima: desc, ciudad: 'Cali' }]);
+    
+    if (error) throw error;
+    console.log("Datos guardados en Supabase exitosamente.");
+  } catch (err) {
+    console.error("Error al guardar en Supabase:", err.message);
+  }
+}
+
 async function loadData() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('content').style.display = 'none';
@@ -438,6 +458,9 @@ async function loadData() {
 
     const now = new Date();
     const currentHour = now.getHours();
+
+    // Guardar los datos actuales en Supabase
+    await guardarEnSupabase(current, weatherDesc);
 
     document.getElementById('temp-now').textContent = current + '°C';
     document.getElementById('temp-now').style.color = getTempColor(current);
@@ -500,6 +523,7 @@ async function loadData() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
   } catch (e) {
+    console.error(e);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error-state').style.display = 'block';
   }
