@@ -285,10 +285,14 @@
 </style>
 </head>
 <body>
-<div id="auth-container" style="position: fixed; inset: 0; background: var(--bg); z-index: 100; display: flex; align-items: center; justify-content: center;">
-  <div id="auth-ui" style="width: 100%; max-width: 400px; padding: 20px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border);">
-    <h2 style="text-align: center; margin-bottom: 20px;">Iniciar Sesión</h2>
-    <div id="supabase-auth-ui"></div> </div>
+<div id="login-screen" style="position: fixed; inset: 0; background: #0a0e1a; z-index: 1000; display: flex; align-items: center; justify-content: center;">
+    <div style="background: #111827; padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); width: 320px; text-align: center;">
+        <h2 style="margin-bottom: 20px; font-family: 'Syne';">ThermoTrack</h2>
+        <input type="email" id="email" placeholder="Tu correo" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #1a2234; background: #0a0e1a; color: white;">
+        <input type="password" id="password" placeholder="Tu contraseña" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #1a2234; background: #0a0e1a; color: white;">
+        <button onclick="login()" style="width: 100%; padding: 12px; background: #4f9eff; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;">Iniciar Sesión</button>
+        <p id="auth-error" style="margin-top: 15px; font-size: 12px;"></p>
+    </div>
 </div>
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
@@ -380,6 +384,44 @@
 const supabaseUrl = 'https://epmvqgwdgktshosgdjbt.supabase.co';
 const supabaseKey = 'sb_publishable_LNKgI0QXeM_DJmYFkYbZfw_fNBGobE-';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('auth-error');
+
+    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+        errorEl.textContent = "Error: " + error.message;
+        errorEl.style.color = "#ff6b6b";
+    } else {
+        console.log("Sesión iniciada:", data.user.email);
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        loadData(); // Inicia el monitor de clima
+    }
+}
+
+// 3. Función para guardar datos (Ahora con USER_ID)
+async function saveToSupabase(temp) {
+    const { data: { user } } = await _supabase.auth.getUser();
+    
+    if (!user) return;
+
+    const { error } = await _supabase
+        .from('registro_clima')
+        .insert([
+            { 
+                temperatura: temp, 
+                ciudad: 'Cali', 
+                user_id: user.id // Aquí se aplica la política RLS que configuraste
+            }
+        ]);
+
+    if (error) console.error("Error al guardar:", error.message);
+    else console.log("Datos guardados para el usuario:", user.email);
+}
 
 function getTempColor(t) {
   if (t <= 20) return '#3bc9db';
