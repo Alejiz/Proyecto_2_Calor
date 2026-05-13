@@ -47,7 +47,7 @@
     max-width: 860px; margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
   }
-
+ 
   /* LOGIN */
   #login-screen {
     position: fixed; inset: 0; background: #0a0e1a;
@@ -91,7 +91,7 @@
   }
   .btn-primary:hover { opacity: 0.88; }
   #auth-error { margin-top: 12px; font-size: 12px; font-family: 'DM Mono', monospace; min-height: 18px; text-align: center; }
-
+ 
   /* HEADER */
   header {
     display: flex; align-items: flex-start; justify-content: space-between;
@@ -122,7 +122,7 @@
     cursor: pointer; transition: all 0.2s;
   }
   .btn-logout:hover { border-color: var(--hot); color: var(--hot); }
-
+ 
   /* LOADING */
   #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 16px; }
   .spin { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -130,7 +130,7 @@
   #loading p { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
   #error-state { display: none; text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
   #content { display: none; }
-
+ 
   /* HERO */
   .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
   .hero-main {
@@ -152,7 +152,7 @@
   .metric-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; flex: 1; }
   .metric-box .m-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
   .metric-box .m-val { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
-
+ 
   /* RECOMMENDATION */
   .rec-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -162,7 +162,7 @@
   .rec-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
   .rec-text h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
   .rec-text p { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
+ 
   /* CHART */
   .chart-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
   .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
@@ -173,7 +173,7 @@
   .bar.current { box-shadow: 0 0 12px rgba(79,158,255,0.5); }
   .bar-hr { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
   .bar-t { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
-
+ 
   /* FORECAST */
   .forecast-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
   .forecast-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -183,7 +183,32 @@
   .forecast-row .f-bar { height: 100%; border-radius: 2px; }
   .forecast-row .f-temp { font-size: 15px; font-weight: 600; width: 48px; text-align: right; }
   .forecast-row .f-rec { font-size: 11px; color: var(--muted); width: 180px; text-align: right; font-family: 'DM Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
+ 
+  /* ── ALERTA DE CALOR ── */
+  #alerta-calor {
+    display: none;
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.4);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    animation: alertPulse 2s ease-in-out infinite;
+  }
+  @keyframes alertPulse {
+    0%,100% { border-color: rgba(255,107,107,0.4); }
+    50% { border-color: rgba(255,107,107,0.9); box-shadow: 0 0 20px rgba(255,107,107,0.2); }
+  }
+  .alerta-inner { display: flex; align-items: center; gap: 12px; }
+  .alerta-icon { font-size: 24px; flex-shrink: 0; }
+  .alerta-texto h4 { font-size: 15px; font-weight: 700; color: #ff6b6b; margin-bottom: 2px; }
+  .alerta-texto p { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .alerta-badge {
+    margin-left: auto; background: rgba(255,107,107,0.15);
+    border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 4px 12px; border-radius: 20px; white-space: nowrap;
+  }
+ 
   /* ── REGISTRO MANUAL ── */
   .registro-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -217,7 +242,7 @@
     font-family: 'DM Mono', monospace; font-size: 12px;
     margin-top: 10px; min-height: 18px; transition: opacity 0.3s;
   }
-
+ 
   /* HISTORIAL */
   .historial-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
   .hist-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
@@ -226,17 +251,17 @@
   .hist-table td:first-child { color: var(--text); font-weight: 500; }
   .hist-table tr:last-child td { border-bottom: none; }
   .hist-empty { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 0.75rem; }
-
+ 
   /* BUTTONS */
   .btn-update { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
   .btn-update:hover { border-color: var(--accent); color: var(--accent); }
-
+ 
   /* FOOTER */
   footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
   .team-badges { display: flex; gap: 6px; flex-wrap: wrap; }
   .team-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); padding: 3px 10px; }
-
+ 
   @media (max-width: 600px) {
     .hero { grid-template-columns: 1fr; }
     .metrics-col { flex-direction: row; }
@@ -249,10 +274,10 @@
 </style>
 </head>
 <body>
-
+ 
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
-
+ 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
@@ -271,7 +296,7 @@
     <p id="auth-error"></p>
   </div>
 </div>
-
+ 
 <!-- APP -->
 <div class="wrap">
   <header>
@@ -286,19 +311,19 @@
       <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
   </header>
-
+ 
   <div id="loading">
     <div class="spin"></div>
     <p>Conectando con API meteorológica...</p>
   </div>
-
+ 
   <div id="error-state">
     <p>No se pudo conectar con la API del clima.<br>Verifica tu conexión e intenta de nuevo.</p>
     <br><button class="btn-update" onclick="loadData()">Reintentar</button>
   </div>
-
+ 
   <div id="content">
-
+ 
     <div class="hero">
       <div class="hero-main">
         <div class="tag">// temperatura actual</div>
@@ -317,7 +342,7 @@
         </div>
       </div>
     </div>
-
+ 
     <div class="rec-section" id="rec-section">
       <div class="rec-icon" id="rec-icon"></div>
       <div class="rec-text">
@@ -325,7 +350,7 @@
         <p id="rec-desc"></p>
       </div>
     </div>
-
+ 
     <div class="chart-section">
       <div class="section-header">
         <h2>Variación horaria — hoy</h2>
@@ -333,12 +358,24 @@
       </div>
       <div class="chart-bars" id="chart-bars"></div>
     </div>
-
+ 
+    <!-- ── ALERTA DE CALOR ── -->
+    <div id="alerta-calor">
+      <div class="alerta-inner">
+        <div class="alerta-icon">🔥</div>
+        <div class="alerta-texto">
+          <h4>⚠ Alerta de calor activa</h4>
+          <p id="alerta-msg">La temperatura supera el umbral recomendado. Toma precauciones.</p>
+        </div>
+        <div class="alerta-badge" id="alerta-temp-badge">--°C</div>
+      </div>
+    </div>
+ 
     <div class="forecast-section">
       <div class="section-header"><h2>Próximas horas</h2></div>
       <div id="forecast-list"></div>
     </div>
-
+ 
     <!-- ── REGISTRO MANUAL ── -->
     <div class="registro-section">
       <div class="section-header">
@@ -372,7 +409,7 @@
       </div>
       <p id="save-msg"></p>
     </div>
-
+ 
     <!-- HISTORIAL -->
     <div class="historial-section">
       <div class="section-header">
@@ -383,9 +420,9 @@
         <p class="hist-empty">Cargando historial...</p>
       </div>
     </div>
-
+ 
   </div><!-- /content -->
-
+ 
   <footer>
     <p>Datos: Open-Meteo API · Proyecto 2 · USC</p>
     <div class="team-badges">
@@ -398,15 +435,15 @@
     </div>
   </footer>
 </div>
-
+ 
 <script>
 const SUPABASE_URL = 'https://epmvqgwdgktshosgdjbt.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_LNKgI0QXeM_DJmYFkYbZfw_fNBGobE-';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+ 
 let currentUser = null;
 let authMode = 'login';
-
+ 
 function switchTab(mode) {
   authMode = mode;
   document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -415,14 +452,14 @@ function switchTab(mode) {
   document.getElementById('auth-btn').textContent = mode === 'login' ? 'Entrar' : 'Crear cuenta';
   document.getElementById('auth-error').textContent = '';
 }
-
+ 
 async function handleAuth() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const errorEl = document.getElementById('auth-error');
   errorEl.textContent = '';
   if (!email || !password) { errorEl.style.color = '#ff6b6b'; errorEl.textContent = 'Completa todos los campos.'; return; }
-
+ 
   if (authMode === 'login') {
     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
     if (error) { errorEl.style.color = '#ff6b6b'; errorEl.textContent = error.message; return; }
@@ -435,7 +472,7 @@ async function handleAuth() {
     switchTab('login');
   }
 }
-
+ 
 function enterApp(user) {
   currentUser = user;
   document.getElementById('login-screen').style.display = 'none';
@@ -443,12 +480,12 @@ function enterApp(user) {
   loadData();
   cargarHistorial();
 }
-
+ 
 async function logout() {
   await _supabase.auth.signOut();
   location.reload();
 }
-
+ 
 /* ── CLIMA API ── */
 function getTempColor(t) {
   if (t <= 20) return '#3bc9db';
@@ -475,7 +512,7 @@ function getWeatherDesc(code) {
   if (code <= 82) return 'Chubascos';
   return 'Tormenta';
 }
-
+ 
 async function loadData() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('content').style.display = 'none';
@@ -493,12 +530,12 @@ async function loadData() {
     const temps = d.hourly.temperature_2m.map(t => Math.round(t));
     const now = new Date();
     const currentHour = now.getHours();
-
+ 
     // Auto-save API reading
     if (currentUser) {
       await _supabase.from('registro_clima').insert([{ temperatura: current, estado_clima: weatherDesc, ciudad: 'Cali', user_id: currentUser.id }]);
     }
-
+ 
     document.getElementById('temp-now').textContent = current + '°C';
     document.getElementById('temp-now').style.color = getTempColor(current);
     document.getElementById('temp-max').textContent = max + '°C';
@@ -506,7 +543,7 @@ async function loadData() {
     document.getElementById('weather-desc').textContent = weatherDesc;
     document.getElementById('feels-row').textContent = `Rango diario: ${min}°C – ${max}°C`;
     document.getElementById('last-update').textContent = 'Actualizado: ' + now.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'});
-
+ 
     const rec = getRec(current);
     const recSection = document.getElementById('rec-section');
     recSection.style.borderColor = rec.color + '44';
@@ -516,22 +553,50 @@ async function loadData() {
     document.getElementById('rec-title').textContent = rec.title;
     document.getElementById('rec-title').style.color = rec.color;
     document.getElementById('rec-desc').textContent = rec.desc;
-
+ 
     const barsEl = document.getElementById('chart-bars');
     barsEl.innerHTML = '';
     const maxT = Math.max(...temps), minT = Math.min(...temps);
     const range = maxT - minT || 1;
     const step = Math.max(1, Math.floor(24/12));
+    // Find index of peak temperature
+    const peakIdx = temps.indexOf(maxT);
     for (let i = 0; i < 24; i += step) {
       const t = temps[i];
       const h = Math.round(((t - minT) / range) * 72 + 12);
       const isCurrent = i === currentHour || (i < currentHour && i + step > currentHour);
+      // Peak = the bar whose range includes the peak index
+      const isPeak = (i <= peakIdx && peakIdx < i + step);
+      let barColor = 'rgba(255,255,255,0.08)';
+      let extraStyle = '';
+      if (isPeak) {
+        barColor = '#ff6b6b';
+        extraStyle = 'box-shadow:0 0 14px rgba(255,107,107,0.6);';
+      } else if (isCurrent) {
+        barColor = getTempColor(t);
+        extraStyle = 'box-shadow:0 0 12px rgba(79,158,255,0.5);';
+      }
+      const peakLabel = isPeak ? `<div style="font-family:'DM Mono',monospace;font-size:9px;color:#ff6b6b;font-weight:700;">PICO</div>` : '';
       const col = document.createElement('div');
       col.className = 'bar-col';
-      col.innerHTML = `<div class="bar-t">${t}°</div><div class="bar${isCurrent?' current':''}" style="height:${h}px;background:${isCurrent?getTempColor(t):'rgba(255,255,255,0.08)'};"></div><div class="bar-hr">${hours[i].replace(':00','h')}</div>`;
+      col.innerHTML = `${peakLabel}<div class="bar-t" style="${isPeak?'color:#ff6b6b;font-weight:700;':''}">${t}°</div><div class="bar${isCurrent?' current':''}" style="height:${h}px;background:${barColor};${extraStyle}"></div><div class="bar-hr">${hours[i].replace(':00','h')}</div>`;
       barsEl.appendChild(col);
     }
-
+ 
+    // ── ALERTA DE CALOR ──
+    const alertEl = document.getElementById('alerta-calor');
+    const UMBRAL = 30;
+    if (current >= UMBRAL) {
+      alertEl.style.display = 'block';
+      document.getElementById('alerta-temp-badge').textContent = current + '°C';
+      let alertMsg = 'La temperatura supera el umbral de ' + UMBRAL + '°C. Toma precauciones.';
+      if (current >= 35) alertMsg = '¡Calor extremo! Evita exposición directa al sol y busca un espacio con aire acondicionado.';
+      else if (current >= 32) alertMsg = 'Calor alto. Reduce actividades físicas, mantente hidratado y ventila tu espacio.';
+      document.getElementById('alerta-msg').textContent = alertMsg;
+    } else {
+      alertEl.style.display = 'none';
+    }
+ 
     const forecastEl = document.getElementById('forecast-list');
     forecastEl.innerHTML = '';
     const nextHours = [];
@@ -544,7 +609,7 @@ async function loadData() {
       row.innerHTML = `<span class="f-time">${hours[i]}</span><div class="f-bar-wrap"><div class="f-bar" style="width:${pct}%;background:${getTempColor(t)};"></div></div><span class="f-temp" style="color:${getTempColor(t)};">${t}°C</span><span class="f-rec">${r.title}</span>`;
       forecastEl.appendChild(row);
     });
-
+ 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
   } catch(e) {
@@ -553,7 +618,7 @@ async function loadData() {
     document.getElementById('error-state').style.display = 'block';
   }
 }
-
+ 
 /* ── REGISTRO MANUAL ── */
 async function guardarManual() {
   const tempVal = document.getElementById('input-temp').value;
@@ -561,25 +626,25 @@ async function guardarManual() {
   const ciudad = document.getElementById('input-ciudad').value.trim() || 'Cali';
   const msgEl = document.getElementById('save-msg');
   const btn = document.getElementById('btn-save');
-
+ 
   if (!tempVal) { msgEl.style.color = '#ff6b6b'; msgEl.textContent = '⚠ Ingresa una temperatura válida.'; return; }
   const temp = parseFloat(tempVal);
   if (temp < -10 || temp > 60) { msgEl.style.color = '#ff6b6b'; msgEl.textContent = '⚠ Temperatura fuera de rango (-10 a 60°C).'; return; }
-
+ 
   btn.disabled = true;
   btn.textContent = 'Guardando...';
   msgEl.textContent = '';
-
+ 
   const { error } = await _supabase.from('registro_clima').insert([{
     temperatura: temp,
     estado_clima: estado,
     ciudad: ciudad,
     user_id: currentUser.id
   }]);
-
+ 
   btn.disabled = false;
   btn.textContent = '+ Guardar';
-
+ 
   if (error) {
     msgEl.style.color = '#ff6b6b';
     msgEl.textContent = '✗ Error al guardar: ' + error.message;
@@ -591,25 +656,25 @@ async function guardarManual() {
     cargarHistorial();
   }
 }
-
+ 
 /* ── HISTORIAL ── */
 async function cargarHistorial() {
   if (!currentUser) return;
   const container = document.getElementById('historial-content');
   container.innerHTML = '<p class="hist-empty">Cargando...</p>';
-
+ 
   const { data, error } = await _supabase
     .from('registro_clima')
     .select('temperatura, estado_clima, ciudad, created_at')
     .eq('user_id', currentUser.id)
     .order('created_at', { ascending: false })
     .limit(10);
-
+ 
   if (error || !data || data.length === 0) {
     container.innerHTML = '<p class="hist-empty">Aún no tienes registros. ¡Guarda tu primera medición!</p>';
     return;
   }
-
+ 
   const table = document.createElement('table');
   table.className = 'hist-table';
   table.innerHTML = `<thead><tr><th>Temp.</th><th>Estado</th><th>Ciudad</th><th>Fecha y hora</th></tr></thead>`;
@@ -629,7 +694,7 @@ async function cargarHistorial() {
   container.innerHTML = '';
   container.appendChild(table);
 }
-
+ 
 setInterval(loadData, 5 * 60 * 1000);
 </script>
 </body>
