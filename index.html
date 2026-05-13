@@ -184,6 +184,33 @@
   .forecast-row .f-temp { font-size: 15px; font-weight: 600; width: 48px; text-align: right; }
   .forecast-row .f-rec { font-size: 11px; color: var(--muted); width: 180px; text-align: right; font-family: 'DM Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
  
+  /* ── MODAL UMBRALES ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 500; display: none; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem; width: 360px; max-width: 90vw;
+  }
+  .modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .modal-box .sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 1.25rem; }
+  .modal-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .modal-field label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
+  .btn-modal-save { flex: 1; padding: 10px; background: var(--accent); border: none; color: white; border-radius: 8px; cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; }
+  .btn-modal-cancel { padding: 10px 16px; background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .umbral-indicator {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--muted); padding: 4px 12px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .umbral-indicator:hover { border-color: var(--accent); color: var(--accent); }
+ 
   /* ── ALERTA DE CALOR ── */
   #alerta-calor {
     display: none;
@@ -297,6 +324,31 @@
   </div>
 </div>
  
+<!-- MODAL UMBRALES -->
+<div class="modal-overlay" id="modal-umbrales">
+  <div class="modal-box">
+    <h3>⚙ Mis umbrales de temperatura</h3>
+    <p class="sub">// Define cuándo recibir alertas personalizadas</p>
+    <div class="modal-row">
+      <div class="modal-field">
+        <label>Umbral superior (°C)</label>
+        <input class="field-input" type="number" id="umbral-max" placeholder="ej: 30" min="0" max="60" />
+      </div>
+      <div class="modal-field">
+        <label>Umbral inferior (°C)</label>
+        <input class="field-input" type="number" id="umbral-min" placeholder="ej: 18" min="-10" max="60" />
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">
+      Recibirás alertas cuando la temperatura supere el umbral superior o baje del inferior.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-modal-save" onclick="guardarUmbrales()">Guardar umbrales</button>
+    </div>
+  </div>
+</div>
+ 
 <!-- APP -->
 <div class="wrap">
   <header>
@@ -308,7 +360,10 @@
       <div class="live-badge"><div class="live-dot"></div>EN VIVO</div>
       <div id="last-update">Cargando datos...</div>
       <div id="user-label"></div>
-      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="umbral-indicator" id="umbral-badge" onclick="abrirModal()">⚙ Umbrales: <span id="umbral-display">30°C / 18°C</span></span>
+        <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+      </div>
     </div>
   </header>
  
@@ -444,6 +499,69 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let authMode = 'login';
  
+// Generar UUID v4 en el cliente para evitar conflicto de primary key
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+ 
+// ── UMBRALES ──
+let umbralMax = parseInt(localStorage.getItem('umbralMax')) || 30;
+let umbralMin = parseInt(localStorage.getItem('umbralMin')) || 18;
+ 
+function abrirModal() {
+  document.getElementById('umbral-max').value = umbralMax;
+  document.getElementById('umbral-min').value = umbralMin;
+  document.getElementById('modal-umbrales').classList.add('open');
+}
+function cerrarModal() {
+  document.getElementById('modal-umbrales').classList.remove('open');
+}
+function guardarUmbrales() {
+  const newMax = parseInt(document.getElementById('umbral-max').value);
+  const newMin = parseInt(document.getElementById('umbral-min').value);
+  if (isNaN(newMax) || isNaN(newMin)) return;
+  if (newMin >= newMax) { alert('El umbral inferior debe ser menor que el superior.'); return; }
+  umbralMax = newMax;
+  umbralMin = newMin;
+  localStorage.setItem('umbralMax', umbralMax);
+  localStorage.setItem('umbralMin', umbralMin);
+  document.getElementById('umbral-display').textContent = umbralMax + '°C / ' + umbralMin + '°C';
+  cerrarModal();
+  // Re-evaluar alerta con nuevos umbrales si hay datos
+  const tempActual = parseFloat(document.getElementById('temp-now').textContent);
+  if (!isNaN(tempActual)) evaluarAlertas(tempActual);
+}
+ 
+function evaluarAlertas(current) {
+  const alertEl = document.getElementById('alerta-calor');
+  if (current >= umbralMax) {
+    alertEl.style.display = 'block';
+    document.getElementById('alerta-temp-badge').textContent = current + '°C';
+    let alertMsg = 'La temperatura supera tu umbral de ' + umbralMax + '°C.';
+    if (current >= 35) alertMsg = '¡Calor extremo! Evita exposición directa al sol y busca aire acondicionado.';
+    else if (current >= 32) alertMsg = 'Calor alto. Reduce actividades físicas, mantente hidratado y ventila tu espacio.';
+    document.getElementById('alerta-msg').textContent = alertMsg;
+  } else if (current <= umbralMin) {
+    alertEl.style.display = 'block';
+    alertEl.style.background = 'rgba(59,201,219,0.1)';
+    alertEl.style.borderColor = 'rgba(59,201,219,0.4)';
+    document.getElementById('alerta-temp-badge').textContent = current + '°C';
+    document.getElementById('alerta-temp-badge').style.color = '#3bc9db';
+    document.querySelector('.alerta-icon').textContent = '❄️';
+    document.querySelector('.alerta-texto h4').style.color = '#3bc9db';
+    document.querySelector('.alerta-texto h4').textContent = '⚠ Alerta de frío activa';
+    document.getElementById('alerta-msg').textContent = 'La temperatura bajó de tu umbral de ' + umbralMin + '°C. Considera abrigarte.';
+  } else {
+    alertEl.style.display = 'none';
+  }
+}
+ 
+// Inicializar badge de umbrales
+document.getElementById('umbral-display').textContent = umbralMax + '°C / ' + umbralMin + '°C';
+ 
 function switchTab(mode) {
   authMode = mode;
   document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -531,9 +649,12 @@ async function loadData() {
     const now = new Date();
     const currentHour = now.getHours();
  
-    // Auto-save API reading
+    // Auto-save API reading con UUID generado
     if (currentUser) {
-      await _supabase.from('registro_clima').insert([{ temperatura: current, estado_clima: weatherDesc, ciudad: 'Cali', user_id: currentUser.id }]);
+      await _supabase.from('registro_clima').insert([{
+        id: generateUUID(),
+        temperatura: current, estado_clima: weatherDesc, ciudad: 'Cali', user_id: currentUser.id
+      }]);
     }
  
     document.getElementById('temp-now').textContent = current + '°C';
@@ -583,19 +704,8 @@ async function loadData() {
       barsEl.appendChild(col);
     }
  
-    // ── ALERTA DE CALOR ──
-    const alertEl = document.getElementById('alerta-calor');
-    const UMBRAL = 30;
-    if (current >= UMBRAL) {
-      alertEl.style.display = 'block';
-      document.getElementById('alerta-temp-badge').textContent = current + '°C';
-      let alertMsg = 'La temperatura supera el umbral de ' + UMBRAL + '°C. Toma precauciones.';
-      if (current >= 35) alertMsg = '¡Calor extremo! Evita exposición directa al sol y busca un espacio con aire acondicionado.';
-      else if (current >= 32) alertMsg = 'Calor alto. Reduce actividades físicas, mantente hidratado y ventila tu espacio.';
-      document.getElementById('alerta-msg').textContent = alertMsg;
-    } else {
-      alertEl.style.display = 'none';
-    }
+    // ── ALERTA con umbrales personalizados ──
+    evaluarAlertas(current);
  
     const forecastEl = document.getElementById('forecast-list');
     forecastEl.innerHTML = '';
@@ -636,6 +746,7 @@ async function guardarManual() {
   msgEl.textContent = '';
  
   const { error } = await _supabase.from('registro_clima').insert([{
+    id: generateUUID(),
     temperatura: temp,
     estado_clima: estado,
     ciudad: ciudad,
@@ -695,7 +806,7 @@ async function cargarHistorial() {
   container.appendChild(table);
 }
  
-setInterval(loadData, 5 * 60 * 1000);
+setInterval(loadData, 10 * 60 * 1000);
 </script>
 </body>
 </html>
