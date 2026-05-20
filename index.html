@@ -537,23 +537,43 @@ function guardarUmbrales() {
  
 function evaluarAlertas(current) {
   const alertEl = document.getElementById('alerta-calor');
+  const badge = document.getElementById('alerta-temp-badge');
+  const icon = document.querySelector('.alerta-icon');
+  const title = document.querySelector('.alerta-texto h4');
+  const msg = document.getElementById('alerta-msg');
+ 
+  // Reset visual completo antes de evaluar
+  alertEl.style.background = 'rgba(255,107,107,0.1)';
+  alertEl.style.borderColor = 'rgba(255,107,107,0.4)';
+  alertEl.style.animation = 'alertPulse 2s ease-in-out infinite';
+  badge.style.color = '#ff6b6b';
+  badge.style.background = 'rgba(255,107,107,0.15)';
+  badge.style.borderColor = 'rgba(255,107,107,0.3)';
+  icon.textContent = '🔥';
+  title.style.color = '#ff6b6b';
+  title.textContent = '⚠ Alerta de calor activa';
+ 
   if (current >= umbralMax) {
     alertEl.style.display = 'block';
-    document.getElementById('alerta-temp-badge').textContent = current + '°C';
+    badge.textContent = current + '°C';
     let alertMsg = 'La temperatura supera tu umbral de ' + umbralMax + '°C.';
     if (current >= 35) alertMsg = '¡Calor extremo! Evita exposición directa al sol y busca aire acondicionado.';
     else if (current >= 32) alertMsg = 'Calor alto. Reduce actividades físicas, mantente hidratado y ventila tu espacio.';
-    document.getElementById('alerta-msg').textContent = alertMsg;
+    msg.textContent = alertMsg;
   } else if (current <= umbralMin) {
+    // Sobreescribir estilos para alerta de frío
     alertEl.style.display = 'block';
     alertEl.style.background = 'rgba(59,201,219,0.1)';
     alertEl.style.borderColor = 'rgba(59,201,219,0.4)';
-    document.getElementById('alerta-temp-badge').textContent = current + '°C';
-    document.getElementById('alerta-temp-badge').style.color = '#3bc9db';
-    document.querySelector('.alerta-icon').textContent = '❄️';
-    document.querySelector('.alerta-texto h4').style.color = '#3bc9db';
-    document.querySelector('.alerta-texto h4').textContent = '⚠ Alerta de frío activa';
-    document.getElementById('alerta-msg').textContent = 'La temperatura bajó de tu umbral de ' + umbralMin + '°C. Considera abrigarte.';
+    alertEl.style.animation = 'none';
+    badge.textContent = current + '°C';
+    badge.style.color = '#3bc9db';
+    badge.style.background = 'rgba(59,201,219,0.15)';
+    badge.style.borderColor = 'rgba(59,201,219,0.3)';
+    icon.textContent = '❄️';
+    title.style.color = '#3bc9db';
+    title.textContent = '⚠ Alerta de frío activa';
+    msg.textContent = 'La temperatura bajó de tu umbral de ' + umbralMin + '°C. Considera abrigarte.';
   } else {
     alertEl.style.display = 'none';
   }
@@ -649,11 +669,13 @@ async function loadData() {
     const now = new Date();
     const currentHour = now.getHours();
  
-    // Auto-save API reading con UUID generado
+    // Auto-save API reading — sin campo id para evitar conflicto con schema
     if (currentUser) {
       await _supabase.from('registro_clima').insert([{
-        id: generateUUID(),
-        temperatura: current, estado_clima: weatherDesc, ciudad: 'Cali', user_id: currentUser.id
+        temperatura: current,
+        estado_clima: weatherDesc,
+        ciudad: 'Cali',
+        user_id: currentUser.id
       }]);
     }
  
@@ -680,14 +702,12 @@ async function loadData() {
     const maxT = Math.max(...temps), minT = Math.min(...temps);
     const range = maxT - minT || 1;
     const step = Math.max(1, Math.floor(24/12));
-    // Find index of peak temperature
-    const peakIdx = temps.indexOf(maxT);
     for (let i = 0; i < 24; i += step) {
       const t = temps[i];
       const h = Math.round(((t - minT) / range) * 72 + 12);
       const isCurrent = i === currentHour || (i < currentHour && i + step > currentHour);
-      // Peak = the bar whose range includes the peak index
-      const isPeak = (i <= peakIdx && peakIdx < i + step);
+      // Marcar como pico cualquier barra que tenga la temperatura máxima del día
+      const isPeak = (t === maxT);
       let barColor = 'rgba(255,255,255,0.08)';
       let extraStyle = '';
       if (isPeak) {
@@ -746,7 +766,6 @@ async function guardarManual() {
   msgEl.textContent = '';
  
   const { error } = await _supabase.from('registro_clima').insert([{
-    id: generateUUID(),
     temperatura: temp,
     estado_clima: estado,
     ciudad: ciudad,
@@ -809,4 +828,5 @@ async function cargarHistorial() {
 setInterval(loadData, 10 * 60 * 1000);
 </script>
 </body>
+</html>
 </html>
